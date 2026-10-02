@@ -1,16 +1,26 @@
 [
- {
-"id": 1,
-"nombre": "Portátil Dell",
-"unidades": 12,
-"precio": 1200,
-"foto": "assets/images/dell.jpg"
- },
- {
-"id": 2,
-"nombre": "Monitor LG",
-"unidades": 8,
-"precio": 299,
-"foto": "assets/images/lg.jpg"
- }
+  {
+    "id": 1,
+    "nombre": "Portátil Dell",
+    "unidades": 12,
+    "precio": 1200,
+    "foto": "assets/images/dell.jpg",
+    "vendedor": "Tecnomadrid S.L."
+  },
+  {
+    "id": 2,
+    "nombre": "Monitor LG",
+    "unidades": 8,
+    "precio": 299,
+    "foto": "assets/images/lg.jpg",
+    "vendedor": "Pantallas Iberia"
+  },
+  {
+    "id": 3,
+    "nombre": "Teclado Logitech",
+    "unidades": 25,
+    "precio": 59,
+    "foto": "assets/images/logitech.jpg",
+    "vendedor": "Periféricos Norte"
+  }
 ]
