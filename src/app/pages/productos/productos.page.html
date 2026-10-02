@@ -9,7 +9,7 @@
       <ion-col>Foto</ion-col>
     </ion-row>
 
-    <ion-row *ngFor="let product of products">
+    <ion-row *ngFor="let product of products()">
       <ion-col>{{product.id}}</ion-col>
       <ion-col>{{product.nombre}}</ion-col>
       <ion-col>{{product.unidades}}</ion-col>
