@@ -1,9 +1,12 @@
-import type { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'corporateApp',
-  webDir: 'www'
-};
-
-export default config;
+import { Injectable } from '@angular/core';
+import { Geolocation } from '@capacitor/geolocation';
+@Injectable({
+ providedIn: 'root'
+})
+export class GeolocationService {
+ async getCurrentPosition() {
+const data =
+ await Geolocation.getCurrentPosition();
+return data.coords;
+ }
+}
