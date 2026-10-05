@@ -1,23 +1,135 @@
-<ion-content>
-  <ion-grid>
-    <ion-row class="header">
-      <ion-col>ID</ion-col>
-      <ion-col>Nombre</ion-col>
-      <ion-col>Unidades</ion-col>
-      <ion-col>Precio</ion-col>
-      <ion-col>Vendedor</ion-col>
-      <ion-col>Foto</ion-col>
-    </ion-row>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Productos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="theme.toggle()">
+        {{ theme.dark ? '☀️ Claro' : '🌙 Oscuro' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-    <ion-row *ngFor="let product of products()">
-      <ion-col>{{product.id}}</ion-col>
-      <ion-col>{{product.nombre}}</ion-col>
-      <ion-col>{{product.unidades}}</ion-col>
-      <ion-col>{{product.precio}} €</ion-col>
-      <ion-col>{{product.vendedor}}</ion-col>
-      <ion-col>
-        <img [src]="product.foto" width="80">
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content class="ion-padding">
+  <h1>Listado de productos</h1>
+
+  <div class="toolbar-row">
+    <ion-button routerLink="/inicio" fill="outline">Volver al inicio</ion-button>
+    <ion-button
+      [fill]="vista === 'tabla' ? 'solid' : 'outline'"
+      (click)="vista = 'tabla'">Tabla</ion-button>
+    <ion-button
+      [fill]="vista === 'tarjetas' ? 'solid' : 'outline'"
+      (click)="vista = 'tarjetas'">Tarjetas</ion-button>
+  </div>
+
+  @if (loading) {
+    <div class="loading">
+      <ion-spinner></ion-spinner>
+      <p>Cargando productos...</p>
+    </div>
+  }
+
+  @if (error) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Error</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ error }}</p>
+        <ion-button (click)="loadProducts()">Reintentar</ion-button>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  @if (!loading && !error) {
+    <p class="summary">
+      Mostrando <strong>{{ products.length }}</strong> de
+      <strong>{{ total }}</strong> productos ·
+      Valor del stock de esta página:
+      <strong>{{ pageStockValue | currency:'EUR' }}</strong>
+    </p>
+
+    @if (vista === 'tabla') {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Marca</th>
+              <th>Precio</th>
+              <th>Dto. %</th>
+              <th>Ancho</th>
+              <th>Alto</th>
+              <th>Valoración</th>
+              <th>Stock</th>
+              <th>Stock valorado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products; track product.id) {
+              <tr>
+                <td>{{ product.id }}</td>
+                <td>
+                  <div class="product">
+                    <img [src]="product.thumbnail" [alt]="product.title" />
+                    <span>{{ product.title }}</span>
+                  </div>
+                </td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.brand || 'Sin marca' }}</td>
+                <td>{{ product.price | currency:'EUR' }}</td>
+                <td>{{ product.discountPercentage | number:'1.0-2' }}%</td>
+                <td>{{ product.dimensions.width | number:'1.0-2' }}</td>
+                <td>{{ product.dimensions.height | number:'1.0-2' }}</td>
+                <td>⭐ {{ product.rating }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ stockValue(product) | currency:'EUR' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <ion-grid>
+        <ion-row>
+          @for (product of products; track product.id) {
+            <ion-col size="12" sizeMd="6" sizeLg="4">
+              <ion-card>
+                <img class="card-img" [src]="product.thumbnail" [alt]="product.title" />
+                <ion-card-header>
+                  <ion-card-subtitle>{{ product.category }}</ion-card-subtitle>
+                  <ion-card-title>{{ product.title }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <p>
+                    <strong>{{ product.price | currency:'EUR' }}</strong>
+                    ({{ product.discountPercentage | number:'1.0-2' }}% dto.)
+                    · ⭐ {{ product.rating }}
+                  </p>
+                  <p>
+                    Dimensiones: {{ product.dimensions.width | number:'1.0-2' }} ×
+                    {{ product.dimensions.height | number:'1.0-2' }}
+                  </p>
+                  <p>Stock: {{ product.stock }} uds.</p>
+                  <ion-progress-bar [value]="stockRatio(product)"></ion-progress-bar>
+                  <p>Stock valorado: <strong>{{ stockValue(product) | currency:'EUR' }}</strong></p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          }
+        </ion-row>
+      </ion-grid>
+    }
+
+    <div class="pagination">
+      <ion-button (click)="prevPage()" [disabled]="page === 1">Anterior</ion-button>
+      <span>Página {{ page }} de {{ totalPages }}</span>
+      <ion-button (click)="nextPage()" [disabled]="page === totalPages">Siguiente</ion-button>
+    </div>
+  }
 </ion-content>
